@@ -35,7 +35,53 @@ sub stats {
 	my $end      = $self->param('end');         # end time in secs since 1970, or "now" to get latest sample
 	my $interval = $self->param('interval');    # the interval between the samples. 10 is minimum, has to be a multiple of 10
 
-	my $j = $self->get_stats( $match, $start, $end, $interval );
+	# demo jvd hack 
+	# my $j = $self->get_stats( $match, $start, $end, $interval );
+	my $file = undef;
+	if ( $match eq "cdn_number_1:all:all:all:kbps" ) {
+		$file = "/Users/jvd/Downloads/ott60.json";
+	}
+	elsif ( $match eq "cdn_number_2:all:all:all:kbps" ) {
+		$file = "/Users/jvd/Downloads/t660.json";
+	}
+	elsif ( $match eq "cdn_number_1:all:all:all:ats.proxy.process.http.current_client_connections" ) {
+		$file = "/Users/jvd/Downloads/ottt60.json";
+	}
+	elsif ( $match eq "cdn_number_2:all:all:all:ats.proxy.process.http.current_client_connections" ) {
+		$file = "/Users/jvd/Downloads/t6t60.json";
+
+	}
+	local $/;
+	open( F1, '<' . $file ) || $self->app->log->error( ">>> " . $! );
+	my $json_text = <F1>;
+	my $j         = decode_json($json_text);
+	my $timebase  = time;
+	print $timebase . " /... \n";
+	my $last = 0;
+	my $nseries = 0;
+	foreach my $series ( @{ $j->{series} } ) {
+		$series->{timeBase} = $timebase;
+		# print "Setting time base to $timebase for $match \n";
+		my $i = 0;
+		foreach my $sample ( @{ $series->{samples} } ) {
+			$timebase += 240;
+			if ( $match =~ /cdn_number_2/ ) {
+				$series->{samples}->[$i] = $series->{samples}->[$i] * 9.9;
+			}
+			$i++;
+		}
+		$nseries++;
+		$last = $i -1;
+	}
+	my $multi = 100;
+	if ($match =~ /kbps$/) {
+		$multi = 1000000;
+	}
+	$j->{series}->[$nseries-1]->{samples}->[$last] = $j->{series}->[$nseries-1]->{samples}->[$last] + rand($multi);
+	# $j->{series}->[$#j->{series}]->{samples}->[$#j->] = $j->{series}->[0]->{samples} + rand(10);
+	# push(@{$j->{series}->[0]->{samples}}, $j->{series}->[0]->{samples} + int(rand(10)));
+	# / demo jvd hack 
+
 	$self->render( json => $j );
 }
 

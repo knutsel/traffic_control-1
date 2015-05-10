@@ -53,6 +53,7 @@ sub get_host_stats {
 	foreach my $cdn ( keys %rascal_host ) {
 		$self->get_crstates( $rascal_host{$cdn}, $big_obj );
 		$self->collect_stats( $rascal_host{$cdn}, $big_obj, \%aadata, \$master_i );
+		last;    # hack for demo mode
 	}
 	$self->add_em_up( $big_obj, \%aadata, \$master_i );
 	###################### Main flow #####################
@@ -75,7 +76,7 @@ sub get_crstates {
 		foreach my $server ( sort keys %{ $cs_hashref->{'caches'} } ) {
 			my $state = $cs_hashref->{'caches'}->{$server}->{'isAvailable'};
 			$big_obj->{'caches'}->{$server}->{'healthy'} = defined($state) ? $state : 'false';
-			$self->app->log->trace("Setting $server to $state");
+			$self->app->log->debug("Setting $server to $state");
 		}
 	}
 }
@@ -90,7 +91,7 @@ sub get_dataserver {
 		my $cdn     = undef;
 		if ( defined($profile) && ( $profile =~ m/EDGE/ || $profile =~ m/MID/ ) ) {
 
-			$self->app->log->trace( "get_data_server cache: " . $i->{'host_name'} );
+			$self->app->log->debug( "get_data_server cache: " . $i->{'host_name'} );
 			$big_obj->{'caches'}->{ $i->{'host_name'} }->{'cachegroup'}   = $i->{'cachegroup'};
 			$big_obj->{'caches'}->{ $i->{'host_name'} }->{'admin_status'} = $i->{'status'};
 			$big_obj->{'caches'}->{ $i->{'host_name'} }->{'profile'}      = $i->{'profile'};
@@ -139,30 +140,59 @@ sub collect_stats {
 	}
 
 	my $args = { hc => 1, stats => "ats\.proxy\.process\.http\.current\_client\_connections\,bandwidth\,queryTime,error\-string" };
-	my $bigstats_hashref = $rascal->get_cache_stats($args);
+
+	# hack for demo mode
+	# my $bigstats_hashref = $rascal->get_cache_stats($args);
+
+	my $bigstats_hashref = undef;
+	my $rs_server = $self->db->resultset('Server')->search( { type => 1 } );
+	while ( my $server = $rs_server->next ) {
+		$bigstats_hashref->{caches}->{ $server->host_name }->{bandwidth}->[0] = { value => 1 };
+	}
+
+	# / hack for demo mode
 
 	foreach my $server ( sort keys %{ $bigstats_hashref->{'caches'} } ) {
 		if ( !defined( $big_obj->{'caches'}->{$server}->{'profile'} ) || $big_obj->{'caches'}->{$server}->{'profile'} =~ m/MID/ ) { next; }
 		my $server_obj = $bigstats_hashref->{'caches'}->{$server};
 		if ( exists( $server_obj->{'bandwidth'} ) ) {
-			$self->app->log->trace("Processing server: $server");
+			$self->app->log->debug("Processing server: $server");
 			my $err_string = "";
 			if ( defined( $server_obj->{'err -string'} ) ) {
 				$err_string = $server_obj->{'err -string'}->[ $#{ $server_obj->{'err -string'} } ]->{'value'};
 			}
-			$big_obj->{'caches'}->{$server}->{'mbps_out'} = $server_obj->{'bandwidth'}->[0]->{'value'};
-			$big_obj->{'caches'}->{$server}->{'connections'} =
-				$server_obj->{'ats.proxy.process.http.current_client_connections'}->[0]->{'value'};
-			$big_obj->{'caches'}->{$server}->{'query_time'} = $server_obj->{'queryTime'}->[0]->{'value'};
+
+			#  hack for demo mode
+			my $factor = ( rand(10) );
+			my $bw     = $factor * 500000;
+			my $conns  = int( $factor * 404 );
+			my $qt     = 12;
+			my $healthy = 1;
+
+			if ($server eq 'atsec-den-03' || $server eq 'atsec-hou-02' || $server eq 'atsec-lax-01') {
+				# really hot server
+				$bw = 18490000 + rand(28000);
+				$conns = 2* (16181 + int(rand(991)));
+				$qt =1;
+				if ($bw > 18500000 ) { 
+					$healthy = 0;
+				}
+			}
+
+			# / hack for demo mode
+
+			$big_obj->{'caches'}->{$server}->{'mbps_out'}    = $bw;
+			$big_obj->{'caches'}->{$server}->{'connections'} = $conns;
+			$big_obj->{'caches'}->{$server}->{'query_time'}  = $qt;
 
 			$aadata_ref->{'aaData'}->[ ${$master_i} ]->[I_INDEX]       = ${$master_i};
 			$aadata_ref->{'aaData'}->[ ${$master_i} ]->[I_PROFILE]     = "$big_obj->{'caches'}->{$server}->{'profile'}";
 			$aadata_ref->{'aaData'}->[ ${$master_i} ]->[I_HOSTNAME]    = "$server";
 			$aadata_ref->{'aaData'}->[ ${$master_i} ]->[I_CACHEGROUP]  = "$big_obj->{'caches'}->{$server}->{'cachegroup'}";
-			$aadata_ref->{'aaData'}->[ ${$master_i} ]->[I_HEALTHY]     = &def_or_zero( $big_obj->{'caches'}->{$server}->{'healthy'} );
+			$aadata_ref->{'aaData'}->[ ${$master_i} ]->[I_HEALTHY]     = $healthy;
 			$aadata_ref->{'aaData'}->[ ${$master_i} ]->[I_ADMINSTATUS] = "$big_obj->{'caches'}->{$server}->{'admin_status'}";
-			$aadata_ref->{'aaData'}->[ ${$master_i} ]->[I_CONNS]       = &int_or_zero( $big_obj->{'caches'}->{$server}->{'connections'} );
-			$aadata_ref->{'aaData'}->[ ${$master_i} ]->[I_MBPS]        = &int_or_zero( $big_obj->{'caches'}->{$server}->{'mbps_out'} );
+			$aadata_ref->{'aaData'}->[ ${$master_i} ]->[I_CONNS]       = $conns;
+			$aadata_ref->{'aaData'}->[ ${$master_i} ]->[I_MBPS]        = $bw;
 			$aadata_ref->{'aaData'}->[ ${$master_i} ]->[I_IPADDR]      = "$big_obj->{'caches'}->{$server}->{'ip_address'}";
 			${$master_i}++;
 		}
@@ -177,12 +207,12 @@ sub add_em_up {
 	my $all_bw     = 0;
 	my $all_conns  = 0;
 	foreach my $cachegroup ( sort keys %{ $big_obj->{'cachegroups'} } ) {
-		$self->app->log->trace("Processing cachegroup: $cachegroup");
+		$self->app->log->debug("Processing cachegroup: $cachegroup");
 		if ( $cachegroup =~ m/mid/ ) { next; }
 		my $total_bw    = 0;
 		my $total_conns = 0;
 		foreach my $cache ( @{ $big_obj->{'cachegroups'}->{$cachegroup}->{'caches'} } ) {
-			$self->app->log->trace("Processing cache: $cache");
+			$self->app->log->debug("Processing cache: $cache");
 			if ( exists( $big_obj->{'caches'}->{$cache}->{'mbps_out'} ) ) {
 				$total_bw += &int_or_zero( $big_obj->{'caches'}->{$cache}->{'mbps_out'} );
 			}
@@ -190,13 +220,13 @@ sub add_em_up {
 				$total_conns += &int_or_zero( $big_obj->{'caches'}->{$cache}->{'connections'} );
 			}
 		}
-		$self->app->log->trace("For cachegroup: $cachegroup, I found $total_bw Mbps, and $total_conns connections");
+		$self->app->log->debug("For cachegroup: $cachegroup, I found $total_bw Mbps, and $total_conns connections");
 		$aadata_ref->{'aaData'}->[ ${$master_i} ]->[I_INDEX]       = "${$master_i}";
 		$aadata_ref->{'aaData'}->[ ${$master_i} ]->[I_PROFILE]     = "ALL";
 		$aadata_ref->{'aaData'}->[ ${$master_i} ]->[I_HOSTNAME]    = "ALL";
 		$aadata_ref->{'aaData'}->[ ${$master_i} ]->[I_CACHEGROUP]  = "$cachegroup";
 		$aadata_ref->{'aaData'}->[ ${$master_i} ]->[I_HEALTHY]     = "true";
-		$aadata_ref->{'aaData'}->[ ${$master_i} ]->[I_ADMINSTATUS] = "ALL";
+		$aadata_ref->{'aaData'}->[ ${$master_i} ]->[I_ADMINSTATUS] = "";
 		$aadata_ref->{'aaData'}->[ ${$master_i} ]->[I_CONNS]       = "$total_conns";
 		$aadata_ref->{'aaData'}->[ ${$master_i} ]->[I_MBPS]        = "$total_bw";
 		$all_bw    += $total_bw;
@@ -208,7 +238,7 @@ sub add_em_up {
 	$aadata_ref->{'aaData'}->[0]->[I_HOSTNAME]    = "ALL";
 	$aadata_ref->{'aaData'}->[0]->[I_CACHEGROUP]  = "ALL";
 	$aadata_ref->{'aaData'}->[0]->[I_HEALTHY]     = "true";
-	$aadata_ref->{'aaData'}->[0]->[I_ADMINSTATUS] = "ALL";
+	$aadata_ref->{'aaData'}->[0]->[I_ADMINSTATUS] = "";
 	$aadata_ref->{'aaData'}->[0]->[I_CONNS]       = "$all_conns";
 	$aadata_ref->{'aaData'}->[0]->[I_MBPS]        = "$all_bw";
 }
