@@ -14,9 +14,9 @@
 .. limitations under the License.
 .. 
 
-*****************
-Multi Site Origin
-*****************
+***************************
+Configure Multi Site Origin
+***************************
 
 .. _rl-multi-site-origin-qht:
 
@@ -26,13 +26,13 @@ Multi Site Origin
 	:scale: 100%
 	:align: center
 
-2) create a profile to assign to each of the origins:
+2) Create a profile to assign to each of the origins:
 
 .. image:: 19BB6EC1-B6E8-4D22-BFA0-B7D6A9708B42.png
 	:scale: 100%
 	:align: center
 
-3) create server entries for the origination vips:
+3) Create server entries for the origination vips:
 
 .. image:: D28614AA-9758-45ED-9EFD-3A284FC4218E.png
 	:scale: 100%
