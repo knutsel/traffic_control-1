@@ -115,8 +115,14 @@ sub update {
 		return $self->alert( { error => "Server Check Extension " . $servercheck_short_name . " not found - Do you need to install it?" } );
 	}
 
-	my $update = $self->db->resultset('Servercheck')->search( { server => $server_id } );
-	$update->update_or_create( { $column_name => $value, } );
+	my $update;
+	if ( $self->db->storage->isa("DBIx::Class::Storage::DBI::mysql") ) {
+		$update = $self->db->resultset('Servercheck')->search( { server => $server_id } );
+		$update->update_or_create( { $column_name => $value, } );
+	} else {
+		$update = $self->db->resultset('Servercheck')->search( { server => $server_id } );
+		$update->update_or_create( { $column_name => $value, } );
+	}
 
 	return $self->success_message("Server Check was successfully updated.");
 }

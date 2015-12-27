@@ -145,10 +145,13 @@ sub teardown {
 sub teardown_cachegroup {
 	my $self        = shift;
 	my $schema      = shift;
-	my $cachegroups = $schema->resultset("Cachegroup")->search( undef, { order_by => { -desc => 'parent_cachegroup_id' } } );
-	while ( my $row = $cachegroups->next ) {
-		$row->delete();
-	}
+	# my $cachegroups = $schema->resultset("Cachegroup")->search( undef, { order_by => { -desc => 'parent_cachegroup_id' } } );
+	# while ( my $row = $cachegroups->next ) {
+	# 	$row->delete();
+	# }
+	my $edges = $schema->resultset('Cachegroup')->search( { type => 1 } );
+	$edges->delete;
+	$schema->resultset('Cachegroup')->delete_all;
 }
 
 1;

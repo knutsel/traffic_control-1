@@ -26,6 +26,7 @@ use Utils::Helper::ResponseHelper;
 sub index {
 	my $self = shift;
 	my @data;
+	#my $rs = $self->db->resultset('ToExtension')->search( undef, { prefetch => ['type'] , order_by => ['me.servercheck_column_name'] } );
 	my $rs = $self->db->resultset('ToExtension')->search( undef, { prefetch => ['type'] } );
 	while ( my $row = $rs->next ) {
 		next unless ( $row->type->name ne 'CHECK_EXTENSION_OPEN_SLOT' );    # Open slots are not in the list
@@ -143,7 +144,8 @@ sub update {
 
 			# check extensions go in an open slot in the extensions table, first check if there's an open slot.
 			my $open_type = &type_id( $self, 'CHECK_EXTENSION_OPEN_SLOT' );
-			my $slot = $self->db->resultset('ToExtension')->search( { type => $open_type }, { rows => 1 } )->single();
+			# the order_by forces it to use the lowest id open slot first, default in mysql, not in pg
+			my $slot = $self->db->resultset('ToExtension')->search( { type => $open_type }, { order_by => 'id', rows => 1 } )->single();
 			if ( !defined($slot) ) {
 				return $self->alert( { error => "No open slots left for checks, delete one first." } );
 			}
@@ -163,7 +165,11 @@ sub update {
 
 			# set all values in servercheck to 0
 			my $clear = $self->db->resultset('Servercheck')->search( {} );    # all
-			$clear->update( { '`' . $slot->servercheck_column_name . '`' => 0 } );    #
+			if ( $self->db->storage->isa("DBIx::Class::Storage::DBI::mysql") ) {  # as is a reserved word
+				$clear->update( { '`' . $slot->servercheck_column_name . '`' => 0 } );    #
+			} else {
+				$clear->update( { '"' . $slot->servercheck_column_name . '"' => 0 } );    # pg
+			}
 
 			return $self->success_message( "Check Extension Loaded.", { id => $slot->id } );
 		}

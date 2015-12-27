@@ -162,29 +162,29 @@ sub check_profile_input {
 		my $id = $self->param('id');
 
 		#get original name
-		my $profile_rs = $self->db->resultset('Profile');
-		my $orig_name = $profile_rs->search( { id => $id } )->get_column('name')->single();
-		if ( $name ne $orig_name ) {
-			my $profiles = $profile_rs->search( { id => { -not_like => $id } } )->get_column('name');
-			while ( my $db_name = $profiles->next ) {
-				if ( $db_name eq $name ) {
-					$self->field('profile.name')->is_equal( "", "Profile with name \"$name\" already exists." );
-				}
-			}
-		}
+		# my $profile_rs = $self->db->resultset('Profile');
+		# my $orig_name = $profile_rs->search( { id => $id } )->get_column('name')->single();
+		# if ( $name ne $orig_name ) {
+		# 	my $profiles = $profile_rs->search( { id => { -not_like => $id } } )->get_column('name');
+		# 	while ( my $db_name = $profiles->next ) {
+		# 		if ( $db_name eq $name ) {
+		# 			$self->field('profile.name')->is_equal( "", "Profile with name \"$name\" already exists." );
+		# 		}
+		# 	}
+		# }
 
 		#get original desc
-		my $orig_desc = $profile_rs->search( { id => $id } )->get_column('description')->single();
-		if ( $description ne $orig_desc ) {
+		# my $orig_desc = $profile_rs->search( { id => $id } )->get_column('description')->single();
+		# if ( $description ne $orig_desc ) {
 
-			#get all other descriptions
-			my $profiles = $profile_rs->search( { id => { -not_like => $id } } )->get_column('description');
-			while ( my $db_desc = $profiles->next ) {
-				if ( $db_desc eq $description ) {
-					$self->field('profile.description')->is_equal( "", "A profile with the exact same description already exists!" );
-				}
-			}
-		}
+		# 	#get all other descriptions
+		# 	my $profiles = $profile_rs->search( { id => { -not_like => $id } } )->get_column('description');
+		# 	while ( my $db_desc = $profiles->next ) {
+		# 		if ( $db_desc eq $description ) {
+		# 			$self->field('profile.description')->is_equal( "", "A profile with the exact same description already exists!" );
+		# 		}
+		# 	}
+		# }
 	}
 	return $self->valid;
 }

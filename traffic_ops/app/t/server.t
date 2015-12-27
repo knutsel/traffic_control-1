@@ -121,6 +121,8 @@ $t->post_ok(
 		type             => 1,
 		profile          => 1,
 		cdn              => 1,
+		upd_pending      => 0,
+		router_port_name => 'ae99.99',
 		mgmt_ip_address  => '192.168.1.1',
 		mgmt_ip_gateway  => '192.168.1.2',
 		mgmt_ip_netmask  => '255.255.255.0',
@@ -130,7 +132,6 @@ $t->post_ok(
 		ilo_username     => 'jvd',
 		ilo_password     => 'tt',
 		router_host_name => 'ur091.jvd.home.net',
-		router_port_name => 'ae99.99',
 	}
 )->status_is(302)->or( sub { diag $t->tx->res->content->asset->{content}; } );
 
