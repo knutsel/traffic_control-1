@@ -1,16 +1,15 @@
 = Traffic Control Proposal =
 
 == Abstract ==
-
 Traffic Control allows you to build a large scale content delivery network using 
 open source. Built around Apache Traffic Server as the caching software, Traffic 
 Control implements all the core functions of a modern CDN.
 
 == Proposal ==
-
 The goal of this proposal is to bring the Traffic Control software into the
 Apache Software Foundation.
 
+== Background ==
 Traffic Control allows you to build a large scale content delivery network
 using open source. Built around Apache Traffic Server as the caching software,
 Traffic Control implements all the core functions of a modern CDN:
@@ -36,14 +35,11 @@ RESTful API endpoints for consumption by tools and other applications.
 about CDNs controlled by Traffic Control. Traffic Stats mines metrics from Traffic Monitor’s 
 JSON APIs and stores the data in InfluxDb.
 
-== Background ==
-
 Traffic Control was developed by Comcast Cable and released as open source
 under the Apache 2.0 license in April of 2015. Traffic Control is deployed at
 Comcast and other cable operators. (JvD note: add blurb about scale?)
 
 == Rationale ==
-
 Even though the traffic on today's CDNs is strictly defined by open standards,
 and there are many open source implementations of caches available, CDNs are
 still proprietary. The current providers of CDN-as-a-product or
@@ -53,14 +49,12 @@ plane of another, creating a classic vendor-lockin for CDN-as-a-product
 customers. Traffic Control changes that.  (JvD note: need to change / expand)
 
 == Initial Goals ==
-
 Traffic Control is functional and deployed at Comcast and other cable
 operators. In the past 6 months 5 releases have been made.
 
 
 == Current Status ==
 === Meritocracy ====
-
 Initial development was done at Comcast Cable. Since April 2015  it has been
 open source, and a few outside contributors have been added.
 
@@ -70,18 +64,15 @@ contributors and users.
 (JvD note: need to change / expand)
 
 === Community ====
-
 Traffic Control is being used by a number of cable companies and is being
 evaluated by a number of vendors and ISPs.
 
 === Core Developers ====
-
 All of the Core developers of Traffic Control are currently at Comcast. The main goal of
 the incubation is to grow the developer and user group into a community beyond
 Comcast and US cable.
 
 === Alignment ====
-
 Traffic Control is closely aligned with Apache Traffic Server (ATS). The only
 supported cache in a Traffic Control CDN at this time is ATS.  Two of our
 initial committers are committers to ATS, and our proposed champion the ATS PMC chair.
@@ -94,18 +85,15 @@ to the Traffic Control CDN.
 == Known Risks ==
 
 === Orphaned products ====
-
 Traffic Control is a new system that does not have wide adoption.
 
 === Inexperience with Open Source ====
-
 One of the members of the team is an active Apache member and committer to
 ATS. The rest of the team has been, in various ways, an active member of the
 ATS community. (JvD note: expand? How cable is changing?)
 
 
 === Homogenous Developers ====
-
 Possibly our weakest area, and one of the drivers for us to want to become
 part of Apache. Most people working on the project are at Comcast, or at least
 in the cable industry.  Even though we are currently open sourced, as it stands, 
@@ -113,11 +101,9 @@ it is not possible to add committers external to Comcast. We want to change that
 We would add 3 external committers as a part of entering the incubator.
 
 === Reliance on Salaried Developers ====
-
 Currently, Traffic Control relies solely on salaried employees.
 
 === Relationships with Other Apache Products ====
-
 See also Alignment. ATS is a big part of a Traffic Control CDN, but we also
 use Apache Tomcat, apache Maven, and a number of other apache libraries (? JvD
 Note).
@@ -132,7 +118,6 @@ Documentation is available at:
 http://traffic-control-cdn.net/docs/latest/index.html
 
 == Initial Source ==
-
 The source code can be found here:
 
 https://github.com/Comcast/traffic_control
@@ -154,23 +139,19 @@ None.
 * notifications@traffic-control.incubator.apache.org
 
 === Subversion Directory ====
-
  -
 
 === Git Repository ====
-
 We will move the source to git-wip-us.apache.org once accepted into the
 incubator.
 
 === Issue Tracking ====
-
  JIRA ?
 
 === Other Resources ====
 
 
 == Initial Committers ==
-
 Dan Kirkwood (dangogh at gmail.com)
 David Neuman (david.neuman64 at gmail.com)
 Dewayne Richardson (dewrich at gmail.com)
@@ -187,7 +168,6 @@ Steve Malenfant ()
 Eric Friedrich ()
 
 == Affiliations ==
-
 Comcast Cable: Dan Kirkwood, David Neuman, Dewayne Richardson, Jackie Heitzer,
     Jan van Doorn, Jeff Elsloo, Jeremy Mitchell, Mark Torluemke, Phil Sorber
 
@@ -198,11 +178,9 @@ Cisco: Eric Friedrich
 == Sponsors ==
 
 === Champion ====
-
 * Leif Hedstrom
 
 === Nominated Mentors ====
-
 * Phil Sorber
 * Eric Covener
 * Daniel Gruno
@@ -210,6 +188,5 @@ Cisco: Eric Friedrich
 
 
 === Sponsoring Entity ====
-
 * The Incubator PMC.
 
