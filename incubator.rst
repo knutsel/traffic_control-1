@@ -8,7 +8,7 @@ Control implements all the core functions of a modern CDN.
 
 == Proposal ==
 
-The goal of this proposal is to bring the Traffic Control software into the
+The goal of this proposal is to bring the Traffic Control project into the
 Apache Software Foundation.
 
 == Background ==
@@ -29,18 +29,18 @@ protocol. Every cache in the CDN is checked using HTTP for vital stats, and
 based on these stats, caches are declared healthy or unhealthy. This information
 is then used by Traffic Router to make its routing decisions.
 
-* Traffic Ops is a Mojolicious perl and jQuery UI application for management and
+* Traffic Ops is a Perl Mojolicious and jQuery UI application for management and
 monitoring of all servers in the CDN. All server and content routing information
 for the CDN is managed through Traffic Ops. It also exposes RESTful API
-	endpoints for consumption by tools and other applications.
+endpoints for consumption by tools and other applications.
 
 * Traffic Stats is a Golang application that is used to acquire and store 
 statistics about CDNs controlled by Traffic Control. Traffic Stats mines metrics
-from Traffic Monitor’s JSON APIs and stores the data in InfluxDb.
+from Traffic Monitor’s JSON APIs and stores the data in InfluxDB.
 
 Traffic Control was developed by Comcast Cable and released as open source under
 the Apache 2.0 license in April of 2015. Traffic Control is deployed at Comcast
-and other cable operators. 
+and other cable operators.
 
 Traffic Control was presented at ApacheCon NA 2016, see http://bit.ly/1UwMzmR
 for additional background information.
@@ -51,7 +51,7 @@ Even though the traffic on today's CDNs is strictly defined by open standards,
 and there are many open source implementations of caches available, CDNs are
 still proprietary. The current providers of CDN-as-a-product or CDN-as-a-service
 all have their own proprietary implementation of the control plane.  The CDN
-control plane of one vendor can't "work with" the CDN control plane of another,
+control plane of one vendor can't interoperate the CDN control plane of another,
 creating a classic vendor-lockin for CDN-as-a-product customers. Traffic Control
 changes that. Emerging standards from IETF (CDNi working group) and the
 Streaming Video Alliance Open Caching working group need an open source
@@ -98,7 +98,6 @@ We don't want to become a sub-project of ATS though, because we believe we
 should add other caching proxies as they are deemed to be a valuable addition to
 the Traffic Control CDN.
 
-
 == Known Risks ==
 
 === Orphaned products ==== 
@@ -110,7 +109,6 @@ Traffic Control is a new system that does not have wide adoption.
 One of the members of the team is an active Apache member and committer to ATS.
 The rest of the team has been, in various ways, active in the ATS community in
 recent years.
-
 
 === Homogenous Developers ====
 
@@ -132,6 +130,9 @@ external dependencies).
 
 === A Excessive Fascination with the Apache Brand ====
 
+We are more attracted to Apache as a philosophy than Apache as a brand. We
+definitely see value in the brand, but we feel that adopting the "Apache Way"
+is the most crucial factor for our long term viability.
 
 == Documentation ==
 
@@ -449,12 +450,20 @@ to replace in the future.
 
 == Cryptography == 
 
-None, except for TLS based REST communications, and basic token and password
-encryption (SHA256, MD5).
+There is no cryptographic code in Traffic Control. We leverage OpenSSL for
+all our cryptography needs.
 
 == Required Resources ==
 
+We would like to utilize GitHub as much as possible, but some continuous
+integration resources would be needed.
+
+Mailing lists, see below.
+
 === Mailing lists ===
+
+Below are our current mailing lists, but we would like to move them to
+ASF maintianed ones.
 
 * private@traffic-control.incubator.apache.org (moderated subscriptions)
 * dev@traffic-control.incubator.apache.org
@@ -463,15 +472,16 @@ encryption (SHA256, MD5).
 
 === Subversion Directory ====
 
+We do not use SVN for source code revision control.
 
 === Git Repository ====
 
-We will move the source to git-wip-us.apache.org once accepted into the
-incubator, and would like to use the same github.com mirror setup as ATS.
+Our development model is based in GitHub and we would prefer to use the
+Git-Dual setup that ATS is currently trialing.
 
 === Issue Tracking ====
 
-JIRA or GitHub issues.
+GitHub issues.
 
 === Other Resources ====
 
@@ -480,18 +490,17 @@ to move away from Comcast.
 
 == Initial Committers ==
 
-* Dan Kirkwood (dangogh at gmail.com) 
+* Dan Kirkwood (dangogh at gmail.com)
 * David Neuman (david.neuman64 at gmail.com)
-* Dewayne Richardson (dewrich at gmail.com) 
+* Dewayne Richardson (dewrich at gmail.com)
 * Eric Friedrich (efriedri at cisco.com)
-* Hank Beatty (Hank.Beatty at cox.com>) 
-* Jackie Heitzer (jackieheitzer at gmail.com) 
-* Jan van Doorn (jvd at knutsel.com) 
-* Jeff Elsloo (jeff.elsloo at gmail.com) 
-* Jeremy Mitchell (mitchell852 at gmail.com) 
-* Mark Torluemke (mark at torluemke.net) 
-* Phil Sorber (sorber at apache.org) 
-* Steve Malenfant (steve.malenfant at cox.com) 
+* Hank Beatty (Hank.Beatty at cox.com>)
+* Jackie Heitzer (jackieheitzer at gmail.com)
+* Jan van Doorn (jvd at knutsel.com)
+* Jeff Elsloo (jeff.elsloo at gmail.com)
+* Jeremy Mitchell (mitchell852 at gmail.com)
+* Mark Torluemke (mark at torluemke.net)
+* Steve Malenfant (steve.malenfant at cox.com)
 
 == Affiliations ==
 
@@ -512,11 +521,9 @@ Jan van Doorn, Jeff Elsloo, Jeremy Mitchell, Mark Torluemke, Phil Sorber
 
 * Phil Sorber (sorber at apache.org)
 * Eric Covener (covener at apache.org)
-* Daniel Gruno  (humbedooh at apache.org)
+* Daniel Gruno (humbedooh at apache.org)
 * J. Aaron Farr (farra at apache.org)
-
 
 === Sponsoring Entity ====
 
 Incubator PMC.
-
