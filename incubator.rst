@@ -49,13 +49,14 @@ for additional background information.
 
 Even though the traffic on today's CDNs is strictly defined by open standards,
 and there are many open source implementations of caches available, CDNs are
-still proprietary. The current providers of CDN-as-a-product or CDN-as-a-service
-all have their own proprietary implementation of the control plane.  The CDN
-control plane of one vendor can't interoperate the CDN control plane of another,
-creating a classic vendor-lockin for CDN-as-a-product customers. Traffic Control
-changes that. Emerging standards from IETF (CDNi working group) and the
-Streaming Video Alliance Open Caching working group need an open source
-reference implementation; Traffic Control will strive to be that.
+still proprietary. The current providers of CDN-as-a-product or
+CDN-as-a-service all have their own proprietary implementation of the control
+plane.  The CDN control plane of one vendor can't interoperate with the CDN
+control plane of another, creating a classic vendor-lockin for CDN-as-a-product
+customers. Traffic Control changes that. Emerging standards from IETF (CDNi
+working group) and the Streaming Video Alliance Open Caching working group need
+an open source reference implementation; Traffic Control will strive to be
+that.
 
 == Initial Goals ==
 
