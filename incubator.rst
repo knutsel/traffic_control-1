@@ -473,7 +473,7 @@ Mailing lists, see below.
 === Mailing lists ===
 
 We currently use "google groups" to communicate, but we would like to move that
-to ASF maintianed mailing lists.
+to ASF maintained mailing lists.
 
 Current groups / mailing lists:
 * https://groups.google.com/forum/#!forum/traffic_control
