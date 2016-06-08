@@ -163,8 +163,10 @@ Note that all dependencies except two have been verified to have a Apache
 compatible license. The two that are not compatible are MySQL (GPL), and we are
 removing that dependency in version 2.0, and jdnssec (GPL), which we are
 planning to replace in the future. A third, Heka is Mozilla Public License 2.0,
-we are unsure if it is compatible, but the dependency is optional, and Heka will
-probably be replaced in the near future.
+we are unsure if it is compatible (http://www.apache.org/legal/resolved.html
+seems to say it is category B, so it is OK to have the binary dependency), but
+the dependency is optional, and Heka will probably be replaced in the near
+future.
 
 * Golang
 ** github.com/gorilla/handlers
@@ -173,7 +175,7 @@ probably be replaced in the near future.
 ** github.com/lib/pq
 * Apache Kafka
 * Heka (https://github.com/mozilla-services/heka - MPL)
-* ELasticSearch
+* ElasticSearch
 * Java
 ** org.apache.wicket
 ** org.slf4j
