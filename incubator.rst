@@ -1,4 +1,4 @@
-= Traffic Control Proposal =
+ = Traffic Control Proposal =
 
 == Abstract ==
 
@@ -37,6 +37,9 @@ endpoints for consumption by tools and other applications.
 * Traffic Stats is a Golang application that is used to acquire and store 
 statistics about CDNs controlled by Traffic Control. Traffic Stats mines metrics
 from Traffic Monitor’s JSON APIs and stores the data in InfluxDB.
+
+* Traffic Analytics is a new component we are starting to build for log file
+analysis, based on Apache Kafka, Heka and ElasticSearch.
 
 Traffic Control was developed by Comcast Cable and released as open source under
 the Apache 2.0 license in April of 2015. Traffic Control is deployed at Comcast
@@ -158,14 +161,19 @@ any dependencies or code that would change that.
 
 Note that all dependencies except two have been verified to have a Apache
 compatible license. The two that are not compatible are MySQL (GPL), and we are
-removing that dependency in version 2.0, and dnssec (GPL), which we are planning
-to replace in the future.
+removing that dependency in version 2.0, and jdnssec (GPL), which we are
+planning to replace in the future. A third, Heka is Mozilla Public License 2.0,
+we are unsure if it is compatible, but the dependency is optional, and Heka will
+probably be replaced in the near future.
 
 * Golang
 ** github.com/gorilla/handlers
 ** github.com/dgrijalva/jwt-go/
 ** github.com/tebeka/selenium
 ** github.com/lib/pq
+* Apache Kafka
+* Heka (https://github.com/mozilla-services/heka - MPL)
+* ELasticSearch
 * Java
 ** org.apache.wicket
 ** org.slf4j
@@ -193,7 +201,6 @@ to replace in the future.
 ** org.eclipse.jetty.aggregate
 ** com.fasterxml.jackson.core
 ** com.quova.bff # neustar commercial - optional
-* perl  > 5.10.1 (do we need this? Java? Golang?)
 * MySQL # Note: being replaced in version 2.0 with Postgres
 * Postgres
 * postgrest (https://github.com/begriffs/postgrest)
