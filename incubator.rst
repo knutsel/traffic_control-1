@@ -470,9 +470,15 @@ Mailing lists, see below.
 
 === Mailing lists ===
 
-Below are our current mailing lists, but we would like to move them to
-ASF maintianed ones.
+We currently use "google groups" to communicate, but we would like to move that
+to ASF maintianed mailing lists.
 
+Current groups / mailing lists:
+* https://groups.google.com/forum/#!forum/traffic_control
+* https://groups.google.com/forum/#!forum/traffic_control-announce
+* https://groups.google.com/forum/#!forum/traffic_control-discuss
+
+Proposed ASF maintained lists:
 * private@traffic-control.incubator.apache.org (moderated subscriptions)
 * dev@traffic-control.incubator.apache.org
 * commits@traffic-control.incubator.apache.org
@@ -513,7 +519,7 @@ to move away from Comcast.
 == Affiliations ==
 
 * Comcast Cable: Dan Kirkwood, David Neuman, Dewayne Richardson, Jackie Heitzer,
-Jan van Doorn, Jeff Elsloo, Jeremy Mitchell, Mark Torluemke, Phil Sorber
+Jan van Doorn, Jeff Elsloo, Jeremy Mitchell, Mark Torluemke
 
 * Cox Communications: Hank Beatty, Steve Malenfant
 
