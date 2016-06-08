@@ -1,4 +1,4 @@
- = Traffic Control Proposal =
+= Traffic Control Proposal =
 
 == Abstract ==
 
