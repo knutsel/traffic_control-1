@@ -542,4 +542,4 @@ Jan van Doorn, Jeff Elsloo, Jeremy Mitchell, Mark Torluemke
 
 === Sponsoring Entity ====
 
-Incubator PMC.
+We request the Apache Incubator to sponsor this project.
