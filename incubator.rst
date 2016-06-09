@@ -509,7 +509,7 @@ to move away from Comcast.
 * Dan Kirkwood (dangogh at gmail.com)
 * David Neuman (david.neuman64 at gmail.com)
 * Dewayne Richardson (dewrich at gmail.com)
-* Eric Friedrich (efriedri at cisco.com)
+* Eric Friedrich (eric.friedrich84 at gmail.com)
 * Hank Beatty (Hank.Beatty at cox.com>)
 * Jackie Heitzer (jackieheitzer at gmail.com)
 * Jan van Doorn (jvd at knutsel.com)
