@@ -243,6 +243,8 @@ public class TrafficRouter {
 
 		return null;
 	}
+
+    @SuppressWarnings("PMD.CyclomaticComplexity")
 	protected List<Cache> selectCaches(final Request request, final DeliveryService ds, final Track track) throws GeolocationException {
 		// DDC - Dynamic Deep Caching
 		// cacheLocation has a list of caches that we can hash this request to.
@@ -254,32 +256,34 @@ public class TrafficRouter {
 		CacheLocation cacheLocation = null;
 		ResultType result = ResultType.CZ;
         if (cacheGroup != null) {
-            LOGGER.info("DDC: client found in CZ, cachegroup = " + cacheGroup.getId());
+//            LOGGER.info("DDC: client found in CZ, cachegroup = " + cacheGroup.getId());
             // change true to a function that returns yes if the request.getPath is popular
 		    if (ds.getDeepCache() == DeliveryService.DC_ALWAYS || (ds.getDeepCache() == DeliveryService.DC_POPULAR && true) ) { 
                 // Deep caching is enabled and wanted for the requested URL. See if there are deep caches available
 		        cacheLocation = getCoverageZoneCacheLocation(request.getClientIP(), ds, true);
-                if (cacheLocation != null) {
-                    // Found deep caches for this client. Use the cacheLocation, and set result to DEEP_CZ
+                if (cacheLocation != null && cacheLocation.getCaches().size() != 0) {
+                    // Found deep caches for this client, and there are caches available there. 
+                    // Use the cacheLocation, and set result to DEEP_CZ
 			        result = ResultType.DEEP_CZ;
-                    LOGGER.info("DDC: Client found in DEEP_CZ");
+//                    LOGGER.info("DDC: Client found in DEEP_CZ caches:" + cacheLocation.getCaches().size());
                 } else {
                     // No deep caches for this client, would have used them if there were any... 
                     // set the cacheLocation to the cacheGroup found earlier.
                     // TODO: should we have a result type for this?
                     cacheLocation = cacheGroup;
-                    LOGGER.info("DDC: Client NOT found in DEEP_CZ, falling back to cachegroup");
+//                    LOGGER.info("DDC: Client NOT found in DEEP_CZ, falling back to cachegroup");
                 }
             } else {
                 // Deep caching not enabled or not for this URL. Back to cachegroup.
-                LOGGER.info("DDC: Deep caching not enabled or not for this URL. Back to cachegroup");
+//                LOGGER.info("DDC: Deep caching not enabled or not for this URL. Back to cachegroup");
                 cacheLocation = cacheGroup;
             }
             
-        }  else {
-            // cacheGroup == null, so let it ride to Geo
-            LOGGER.info("DDC: client NOT found in CZ");
-        } 
+        }  
+//        else {
+//            // cacheGroup == null, so let it ride to Geo
+//             LOGGER.info("DDC: client NOT found in CZ");
+//        } 
 
 		List<Cache>caches = selectCachesByCZ(ds, cacheLocation, track, result);
 
@@ -577,19 +581,19 @@ public class TrafficRouter {
 		}
 
 		if (networkNode == null) {
-			LOGGER.info("DDC networkNode == null");
+			//LOGGER.info("DDC networkNode == null");
 			return null;
 		}
 
-		LOGGER.info("DDC networkNode != null");
+		//LOGGER.info("DDC networkNode != null");
 		CacheLocation cacheLocation = networkNode.getCacheLocation();
 
 		if (cacheLocation != null) {
-			LOGGER.info("DDC cacheLocation != null!");
+			//LOGGER.info("DDC cacheLocation != null!");
 			return cacheLocation;
 		}
 
-		LOGGER.info("DDC cacheLocation == null!");
+		//LOGGER.info("DDC cacheLocation == null!");
 		if (networkNode.getLoc() == null) {
 			return null;
 		}

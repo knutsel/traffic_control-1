@@ -226,19 +226,16 @@ public class NetworkNode implements Comparable<NetworkNode> {
     public NetworkNode getNetwork(final NetworkNode ipnn) {
         //LOGGER.info("getNetwork " + ipnn.cidrAddress + " from " +this.children.size());
         if (this.compareTo(ipnn) != 0) {
-            LOGGER.info("DDC One");
             return null;
         }
 
         if (children == null) {
-            LOGGER.info("DDC Two");
             return this;
         }
 
         final NetworkNode c = children.get(ipnn);
 
         if (c == null) {
-            LOGGER.info("DDC Three");
             return this;
         }
 
