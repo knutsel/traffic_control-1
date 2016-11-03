@@ -67,6 +67,14 @@ import com.comcast.cdn.traffic_control.traffic_router.core.util.TrafficOpsUtils;
 import com.comcast.cdn.traffic_control.traffic_router.core.util.CidrAddress;
 import com.comcast.cdn.traffic_control.traffic_router.core.router.StatTracker.Track.ResultDetails;
 
+//import com.ning.http.client.AsyncCompletionHandler;
+import com.ning.http.client.AsyncHttpClient;
+//import com.ning.http.client.AsyncHttpClientConfig;
+//import com.ning.http.client.Request;
+import com.ning.http.client.Response;
+import java.util.concurrent.Future;
+import java.util.concurrent.ExecutionException;
+
 public class TrafficRouter {
 	public static final Logger LOGGER = Logger.getLogger(TrafficRouter.class);
 	public static final String XTC_STEERING_OPTION = "x-tc-steering-option";
@@ -244,8 +252,35 @@ public class TrafficRouter {
 		return null;
 	}
 
+    // Just hacking here, there have to be many better ways
+   AsyncHttpClient asyncHttpClient;
+   protected boolean isPopular(final String request, final String dsName, final String cgName) {
+
+        if (asyncHttpClient == null) {
+            asyncHttpClient = new AsyncHttpClient();
+        }
+        final String url = "http://localhost:8090/trending/?cache_group="+cgName+"&delivery_service="+dsName+"&file="+request;
+        //LOGGER.info("URL is : " + url);
+        try {
+            final Future<Response> f = asyncHttpClient.prepareGet(url).execute();
+            final Response r = f.get();
+            final String rString = r.getResponseBody();
+            //LOGGER.info(rString);
+            if (("{\"istrending\":false}").equals(rString)) { // TODO JvD - use json or status code.
+                return true;
+            }
+        } catch (IOException e) {
+            LOGGER.info("HALP!");
+        } catch  (InterruptedException e) {
+            LOGGER.info("HALLLLLPPP!");
+        } catch (ExecutionException e) {
+            LOGGER.info("halp");
+        }
+        return false;
+    }
+
     @SuppressWarnings("PMD.CyclomaticComplexity")
-	protected List<Cache> selectCaches(final Request request, final DeliveryService ds, final Track track) throws GeolocationException {
+	protected List<Cache> selectCaches(final HTTPRequest request, final DeliveryService ds, final Track track) throws GeolocationException {
 		// DDC - Dynamic Deep Caching
 		// cacheLocation has a list of caches that we can hash this request to.
 		// Make this list different for content that should be cached deep.
@@ -258,7 +293,8 @@ public class TrafficRouter {
         if (cacheGroup != null) {
 //            LOGGER.info("DDC: client found in CZ, cachegroup = " + cacheGroup.getId());
             // change true to a function that returns yes if the request.getPath is popular
-		    if (ds.getDeepCache() == DeliveryService.DC_ALWAYS || (ds.getDeepCache() == DeliveryService.DC_POPULAR && true) ) { 
+            //boolean isPop = isPopular(request.getPath(), ds.getId(), cacheGroup.getId());
+		    if (ds.getDeepCache() == DeliveryService.DC_ALWAYS || (ds.getDeepCache() == DeliveryService.DC_POPULAR && isPopular(request.getPath(), ds.getId(), cacheGroup.getId())) ) { 
                 // Deep caching is enabled and wanted for the requested URL. See if there are deep caches available
 		        cacheLocation = getCoverageZoneCacheLocation(request.getClientIP(), ds, true);
                 if (cacheLocation != null && cacheLocation.getCaches().size() != 0) {
