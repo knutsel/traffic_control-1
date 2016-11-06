@@ -95,10 +95,10 @@ public class DeliveryService {
 	private final boolean redirectToHttps;
 	private int deepCache; // should this be final or should it be settable?
 
-    // enums are hard in Java.
-    public static final int DC_NEVER   = 0;
-    public static final int DC_POPULAR = 1;
-    public static final int DC_ALWAYS  = 2;
+	// enums are hard in Java.
+	public static final int DC_NEVER   = 0;
+	public static final int DC_POPULAR = 1;
+	public static final int DC_ALWAYS  = 2;
 
 	public DeliveryService(final String id, final JSONObject dsJo) throws JSONException {
 		this.id = id;
@@ -390,10 +390,6 @@ public class DeliveryService {
 	public void setDns(final boolean isDns) {
 		this.isDns = isDns;
 	}
-
-	//public static enum DeepCacheType {
-		//DC_NEVER(0), DC_ALWAYS(2), DC_POPULAR(1)
-	//}
 
 	public int getDeepCache() {
 		return deepCache;

@@ -47,7 +47,7 @@ public class NetworkNode implements Comparable<NetworkNode> {
     private static NetworkNode instance;
     private static NetworkNode deepInstance;
 
-    private static CacheRegister cacheRegister; 
+    private static CacheRegister cacheRegister;
 
     private CidrAddress cidrAddress;
     private String loc;
