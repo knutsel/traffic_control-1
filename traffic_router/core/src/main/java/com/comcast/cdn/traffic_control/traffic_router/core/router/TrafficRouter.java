@@ -260,21 +260,19 @@ public class TrafficRouter {
             asyncHttpClient = new AsyncHttpClient();
         }
         final String url = "http://localhost:8090/trending/?cache_group="+cgName+"&delivery_service="+dsName+"&file="+request;
-        //LOGGER.info("URL is : " + url);
         try {
             final Future<Response> f = asyncHttpClient.prepareGet(url).execute();
             final Response r = f.get();
             final String rString = r.getResponseBody();
-            //LOGGER.info(rString);
             if (("{\"istrending\":false}").equals(rString)) { // TODO JvD - use json or status code.
                 return true;
             }
         } catch (IOException e) {
-            LOGGER.info("HALP!");
+            LOGGER.error("IOException in DDC call: " + e.getMessage());
         } catch  (InterruptedException e) {
-            LOGGER.info("HALLLLLPPP!");
+            LOGGER.error("InterruptedException in DDC call: " + e.getMessage());
         } catch (ExecutionException e) {
-            LOGGER.info("halp");
+            LOGGER.error("ExecutionException in DDC call: " + e.getMessage());
         }
         return false;
     }
