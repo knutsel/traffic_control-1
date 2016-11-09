@@ -263,7 +263,7 @@ public class TrafficRouter {
 			final Future<Response> f = asyncHttpClient.prepareGet(url).execute();
 			final Response r = f.get();
 			final String rString = r.getResponseBody();
-			if (("{\"istrending\":false}").equals(rString)) { // TODO JvD - use json or status code.
+			if (("{\"istrending\":true}").equals(rString)) { // TODO JvD - use json or status code.
 				return true;
 			}
 		} catch (IOException e) {
