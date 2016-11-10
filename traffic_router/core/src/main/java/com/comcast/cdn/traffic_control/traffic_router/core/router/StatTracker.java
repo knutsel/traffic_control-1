@@ -92,6 +92,7 @@ public class StatTracker {
 		public int czCount;
 		public int geoCount;
 		public int deepCzCount;
+		public int deepCzMissCount;
 		public int missCount;
 		public int dsrCount;
 		public int errCount;
@@ -103,11 +104,11 @@ public class StatTracker {
 
 	public static class Track {
 		public static enum RouteType {
-			DNS,HTTP
+			DNS, HTTP
 		}
 
 		public static enum ResultType {
-			ERROR, CZ, GEO, MISS, STATIC_ROUTE, DS_REDIRECT, DS_MISS, INIT, FED, RGDENY, RGALT, GEO_REDIRECT, DEEP_CZ
+			ERROR, CZ, GEO, MISS, STATIC_ROUTE, DS_REDIRECT, DS_MISS, INIT, FED, RGDENY, RGALT, GEO_REDIRECT, DEEP_CZ, DEEP_CZ_MISS
 		}
 
 		public enum ResultDetails {
@@ -121,7 +122,7 @@ public class StatTracker {
 		ResultType result = ResultType.ERROR;
 		ResultDetails resultDetails = ResultDetails.NO_DETAILS;
 		Geolocation resultLocation;
-		
+
 		Geolocation clientGeolocation; // the GEO info always retrieved from GEO DB, not from Cache Location
 		boolean isClientGeolocationQueried;
 
@@ -131,7 +132,7 @@ public class StatTracker {
 			start();
 		}
 		public String toString() {
-			return fqdn+" - "+result;
+			return fqdn + " - " + result;
 		}
 		public void setRouteType(final RouteType routeType, final String fqdn) {
 			this.routeType = routeType;
@@ -205,15 +206,15 @@ public class StatTracker {
 		return totalDnsCount;
 	}
 	public long getAverageDnsTime() {
-		if(totalDnsCount==0) { return 0; }
-		return totalDnsTime/totalDnsCount;
+		if (totalDnsCount == 0) { return 0; }
+		return totalDnsTime / totalDnsCount;
 	}
 	public int getTotalHttpCount() {
 		return totalHttpCount;
 	}
 	public long getAverageHttpTime() {
-		if(totalHttpCount==0) { return 0; }
-		return totalHttpTime/totalHttpCount;
+		if (totalHttpCount == 0) { return 0; }
+		return totalHttpTime / totalHttpCount;
 	}
 	public int getTotalDsMissCount() {
 		return totalDsMissCount;
@@ -227,7 +228,7 @@ public class StatTracker {
 	private int totalHttpCount;
 	private long totalHttpTime;
 	private int totalDsMissCount = 0;
-	public Map<String,Long> getUpdateTracker() {
+	public Map<String, Long> getUpdateTracker() {
 		return TrafficRouterManager.getTimeTracker();
 	}
 	public long getAppStartTime() {
@@ -245,9 +246,9 @@ public class StatTracker {
 
 		t.end();
 
-		synchronized(this) {
-			Map<String,Tallies> map;
-			if(t.routeType == RouteType.DNS) {
+		synchronized (this) {
+			Map<String, Tallies> map;
+			if (t.routeType == RouteType.DNS) {
 				totalDnsCount++;
 				totalDnsTime += t.time;
 				map = dnsMap;
@@ -257,9 +258,9 @@ public class StatTracker {
 				map = httpMap;
 			}
 			Tallies tallies = map.get(t.fqdn);
-			if(tallies == null) {
+			if (tallies == null) {
 				tallies = new Tallies();
-				map.put((t.fqdn==null)?"null":t.fqdn, tallies);
+				map.put((t.fqdn == null) ? "null" : t.fqdn, tallies);
 			}
 			incTally(t, tallies);
 		}
@@ -267,7 +268,7 @@ public class StatTracker {
 
 	@SuppressWarnings("PMD.CyclomaticComplexity")
 	private static void incTally(final Track t, final Tallies tallies) {
-		switch(t.result) {
+		switch (t.result) {
 		case ERROR:
 			tallies.errCount++;
 			break;
@@ -279,6 +280,9 @@ public class StatTracker {
 			break;
 		case DEEP_CZ:
 			tallies.deepCzCount++;
+			break;
+		case DEEP_CZ_MISS:
+			tallies.deepCzMissCount++;
 			break;
 		case MISS:
 			tallies.missCount++;
